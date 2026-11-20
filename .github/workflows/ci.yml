@@ -20,10 +20,11 @@ jobs:
           sudo cp "prometheus-${PROM_VERSION}.linux-amd64/promtool" /usr/local/bin/promtool
           promtool --version
 
-      - name: Validate alert rules
+      - name: Validate Prometheus config and alert rules
         run: |
+          promtool check config prometheus/prometheus.yml
           promtool check rules alerts/*.yml
 
       - name: Validate Grafana dashboard JSON
         run: |
-          python3 -m json.tool dashboards/*.json > /dev/null
+          python3 -m json.tool grafana/three-tier-app-dashboard.json > /dev/null
