@@ -1,0 +1,20 @@
+groups:
+  - name: three_tier_monitoring_alerts
+    rules:
+      - alert: TargetDown
+        expr: up == 0
+        for: 30s
+        labels:
+          severity: warning
+        annotations:
+          summary: "Target {{ $labels.job }} ({{ $labels.instance }}) is down"
+          description: "Prometheus target {{ $labels.job }} on {{ $labels.instance }} has been down for more than 30s."
+
+      - alert: NodeExporterDown
+        expr: up{job="node_exporter"} == 0
+        for: 15s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Node Exporter on {{ $labels.instance }} is down"
+          description: "Host metrics collection from node_exporter has stopped."

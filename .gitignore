@@ -1,0 +1,6 @@
+*.tar.gz
+*.bak
+*.tmp
+.env
+*secret*
+*token*

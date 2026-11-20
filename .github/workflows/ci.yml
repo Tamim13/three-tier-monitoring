@@ -1,0 +1,29 @@
+name: Monitoring CI Validation
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install promtool
+        run: |
+          PROM_VERSION="2.53.5"
+          curl -sSL "https://github.com/prometheus/prometheus/releases/download/v${PROM_VERSION}/prometheus-${PROM_VERSION}.linux-amd64.tar.gz" -o prom.tar.gz
+          tar -xzf prom.tar.gz
+          sudo cp "prometheus-${PROM_VERSION}.linux-amd64/promtool" /usr/local/bin/promtool
+          promtool --version
+
+      - name: Validate alert rules
+        run: |
+          promtool check rules alerts/*.yml
+
+      - name: Validate Grafana dashboard JSON
+        run: |
+          python3 -m json.tool dashboards/*.json > /dev/null
